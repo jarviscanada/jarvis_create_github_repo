@@ -73,3 +73,4 @@ parse_row() {
 for row in $(cat $csv_file); do
     create_github_repo $(parse_row ${row})
 done
+exit 0
