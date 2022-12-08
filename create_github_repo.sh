@@ -4,7 +4,7 @@ github_token=$1
 csv_file=$2
 
 REPO_PREFIX="jarvis_data_eng_"
-USER_NAME="jarviscanada"
+USER_NAME="adamelmasri"
 
 repos_json=$(curl -s --location --request GET 'https://api.github.com/user/repos' --header "Authorization: token ${github_token}")
 
@@ -20,10 +20,21 @@ check_http_status() {
     fi
 }
 
+generate_id() {
+    repo_name=$1
+    count=$(echo "$repos_json" | grep '"name": "' | grep -wi ${repo_name} | wc -l)
+    if [ $count -eq 0 ]; then
+        echo ""
+    else
+        echo $((count + 1))
+    fi
+}
+
 create_github_repo() {
     username=$1
     repo_name=${REPO_PREFIX}${username}
     collaborator=$2
+    repo_name=${repo_name}${id}
 
     echo ">>>>processing $repo_name"
 
