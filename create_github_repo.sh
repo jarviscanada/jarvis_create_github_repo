@@ -4,7 +4,7 @@ github_token=$1
 csv_file=$2
 
 REPO_PREFIX="jarvis_data_eng_"
-USER_NAME="adamelmasri"
+USER_NAME="jarviscanada"
 
 repos_json=$(curl -s --location --request GET 'https://api.github.com/user/repos' --header "Authorization: token ${github_token}")
 
