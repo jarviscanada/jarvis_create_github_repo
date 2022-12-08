@@ -13,7 +13,11 @@ check_http_status() {
     expected_status=$2
     action=$3
     status=$(echo "$1" | head -1 | awk '{print $2}' | xargs)
-    echo "${1} ${2} ${3}"
+    if [ "$status" = "$2" ]; then
+        echo "----Sccuss: $action"
+    else
+        echo >&2 "----Failed: $action"
+    fi
 }
 
 create_github_repo() {
