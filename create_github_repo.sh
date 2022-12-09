@@ -8,16 +8,6 @@ USER_NAME="jarviscanada"
 
 repos_json=$(curl -s --location --request GET 'https://api.github.com/user/repos' --header "Authorization: token ${github_token}")
 
-generate_id() {
-    repo_name=$1
-    count=$(echo "$repos_json" | grep '"name": "' | grep -wi ${repo_name} | wc -l)
-    if [ $count -eq 0 ]; then
-        echo ""
-    else
-        echo $((count + 1))
-    fi
-}
-
 check_http_status() {
     http_response=$1
     expected_status=$2
@@ -30,12 +20,21 @@ check_http_status() {
     fi
 }
 
+generate_id() {
+    repo_name=$1
+    count=$(echo "$repos_json" | grep '"name": "' | grep -wi ${repo_name} | wc -l)
+    if [ $count -eq 0 ]; then
+        echo ""
+    else
+        echo $((count + 1))
+    fi
+}
+
 create_github_repo() {
     username=$1
     repo_name=${REPO_PREFIX}${username}
-    id=$(generate_id ${repo_name})
-    repo_name=${repo_name}${id}
     collaborator=$2
+    repo_name=${repo_name}${id}
 
     echo ">>>>processing $repo_name"
 
@@ -47,19 +46,19 @@ create_github_repo() {
         --data-raw '{
 	"name": "'${repo_name}'"
 }')
-    check_http_status "${http_response}" 201 "create repo"
+    # check_http_status "${http_response}" 201 "create repo"
 
     #add collaborator
     sleep 1
     http_response=$(curl -i -s --location --request PUT "https://api.github.com/repos/${USER_NAME}/${repo_name}/collaborators/${collaborator}" \
         --header "Authorization: token ${github_token}")
-    check_http_status "${http_response}" 201 "add collaborator"
+    # check_http_status "${http_response}" 201 "add collaborator"
 
     #stop watching
     sleep 1
     http_response=$(curl -i -s --location --request DELETE 'https://api.github.com/repos/'${USER_NAME}'/'${repo_name}'/subscription' \
         --header 'Authorization: token '${github_token}'')
-    check_http_status "${http_response}" 204 "stop watching"
+    # check_http_status "${http_response}" 204 "stop watching"
 
     echo ">>>>Finish $repo_name"
     echo ""
