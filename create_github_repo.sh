@@ -14,7 +14,7 @@ check_http_status() {
     action=$3
     status=$(echo "$1" | head -1 | awk '{print $2}' | xargs)
     if [ "$status" = "$2" ]; then
-        echo "----Sccuss: $action"
+        echo "----Success: $action"
     else
         echo >&2 "----Failed: $action"
     fi
