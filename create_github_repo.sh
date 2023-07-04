@@ -33,6 +33,7 @@ generate_id() {
 create_github_repo() {
     username=$1
     repo_name=${REPO_PREFIX}${username}
+    id=$(generate_id ${repo_name})
     collaborator=$2
     repo_name=${repo_name}${id}
 
